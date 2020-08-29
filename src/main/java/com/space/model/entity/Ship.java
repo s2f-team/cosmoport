@@ -1,8 +1,12 @@
 package com.space.model.entity;
 
 import com.space.model.ShipType;
+import jakarta.validation.constraints.*;
+import org.apache.commons.math3.util.Precision;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -16,24 +20,36 @@ public class Ship {
     private Long id;
 
     @Column(name = "name")
+    @NotNull
+    @Size(min = 1, max = 50, message = "Name must be between 1 and 50 characters")
     private String name;
 
     @Column(name = "planet")
+    @NotNull
+    @Size(min = 1, max = 50, message = "Planet must be between 1 and 50 characters")
     private String planet;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private ShipType shipType;
 
     @Temporal(TemporalType.DATE)
+    @NotNull
+    @Min(value = 26194914000000L, message = "Min date = 26194914000000 ms")
+    @Max(value = 33126786000000L, message = "Max date = 33126786000000 ms")
     private Date prodDate; //ms (started 01.01.1970)
 
     @Column(name = "isUsed")
     private Boolean isUsed; //default false (if doesn't exists)
 
     @Column(name = "speed")
+    @NotNull
     private Double speed;
 
     @Column(name = "crewSize")
+    @NotNull
+    @Min(value = 1, message = "Min crew size = 1")
+    @Max(value = 9999, message = "Max crew size = 9999")
     private Integer crewSize;
 
     @Column(name = "rating")
@@ -52,6 +68,16 @@ public class Ship {
         this.speed = speed;
         this.crewSize = crewSize;
         this.rating = rating;
+    }
+
+    public Ship(@NotNull @Size(min = 1, max = 50, message = "Name must be between 1 and 50 characters") String name, @NotNull @Size(min = 1, max = 50, message = "Planet must be between 1 and 50 characters") String planet, @NotNull ShipType shipType, @NotNull @Min(value = 26194914000000L, message = "Min date = 26194914000000 ms") @Max(value = 33126786000000L, message = "Max date = 33126786000000 ms") Date prodDate, Boolean isUsed, @NotNull Double speed, @NotNull @Min(value = 1, message = "Min crew size = 1") @Max(value = 9999, message = "Max crew size = 9999") Integer crewSize) {
+        this.name = name;
+        this.planet = planet;
+        this.shipType = shipType;
+        this.prodDate = prodDate;
+        this.isUsed = isUsed;
+        this.speed = speed;
+        this.crewSize = crewSize;
     }
 
     public Long getId() {
@@ -134,10 +160,35 @@ public class Ship {
         int productionYear = calendar.get(Calendar.YEAR);
         double coefficient = isUsed ? 0.5 : 1;
 
-        return (80 * this.speed * coefficient) / (currentYear - productionYear + 1);
+        Double rating = (80 * this.speed * coefficient) / (currentYear - productionYear + 1);
+
+        return roundDoubleTo100(rating);
+    }
+
+    public static Double roundDoubleTo100(Double value) {
+        BigDecimal result = new BigDecimal(value);
+        result = result.setScale(2, RoundingMode.HALF_UP);
+        return result.doubleValue();
     }
 
     public static void main(String[] args) {
+        Date date = new Date();
+        System.out.println(date.getTime());
+
+        Calendar calendar = new GregorianCalendar(2800, 1, 1);
+        Calendar calendar2 = new GregorianCalendar(3019, 9, 1);
+
+        System.out.println(calendar.getTimeInMillis());
+        System.out.println(calendar2.getTimeInMillis());
+
+        Double r = 27.512399999999998;
+        Double r2 = 2752.153789;
+        System.out.println(Precision.round(r, 2));
+        System.out.println(Precision.round(r2, 2));
+
+        System.out.println(roundDoubleTo100(r));
+        System.out.println(roundDoubleTo100(r2));
+
     }
 
 

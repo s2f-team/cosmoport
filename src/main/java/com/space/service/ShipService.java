@@ -28,5 +28,17 @@ public class ShipService {
         return shipRepository.findById(id);
     }
 
+    public Ship save(Ship ship) {
+        return shipRepository.save(ship);
+    }
+
+    public void deleteById(Long id) {
+        shipRepository.deleteById(id);
+    }
+
+    public boolean isExistById(Long id){
+        return shipRepository.existsById(id);
+    }
+
 
 }

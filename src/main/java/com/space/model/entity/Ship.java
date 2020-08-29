@@ -11,23 +11,32 @@ import java.util.GregorianCalendar;
 @Table(name = "ship")
 public class Ship {
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "name")
     private String name;
+
     @Column(name = "planet")
     private String planet;
-    @Transient
+
+    @Enumerated(EnumType.STRING)
     private ShipType shipType;
-    @Transient
+
+    @Temporal(TemporalType.DATE)
     private Date prodDate; //ms (started 01.01.1970)
-    @Transient
+
+    @Column(name = "isUsed")
     private Boolean isUsed; //default false (if doesn't exists)
-    @Transient
+
+    @Column(name = "speed")
     private Double speed;
-    @Transient
+
+    @Column(name = "crewSize")
     private Integer crewSize;
-    @Transient
+
+    @Column(name = "rating")
     private Double rating;
 
     public Ship() {

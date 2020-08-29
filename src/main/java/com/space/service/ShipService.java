@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -21,6 +22,10 @@ public class ShipService {
 
     public long сount() {
         return shipRepository.count();
+    }
+
+    public Optional<Ship> findById(Long id) {
+        return shipRepository.findById(id);
     }
 
 

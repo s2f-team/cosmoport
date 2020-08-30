@@ -1,10 +1,15 @@
 package com.space.controller;
 
+import com.space.model.ShipType;
 import com.space.model.entity.Ship;
 import com.space.service.ShipService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -23,15 +28,61 @@ public class ShipController {
 
     @GetMapping(path = "/ships", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<Ship> showAll() {
-        return shipService.listAll();
+    public List<Ship> showAll(@RequestParam(value = "name", required = false) String name,
+                              @RequestParam(value = "planet", required = false) String planet,
+                              @RequestParam(value = "shipType", required = false) ShipType shipType,
+                              @RequestParam(value = "after", required = false) Long after,
+                              @RequestParam(value = "before", required = false) Long before,
+                              @RequestParam(value = "isUsed", required = false) Boolean isUsed,
+                              @RequestParam(value = "minSpeed", required = false) Double minSpeed,
+                              @RequestParam(value = "maxSpeed", required = false) Double maxSpeed,
+                              @RequestParam(value = "minCrewSize", required = false) Integer minCrewSize,
+                              @RequestParam(value = "maxCrewSize", required = false) Integer maxCrewSize,
+                              @RequestParam(value = "minRating", required = false) Double minRating,
+                              @RequestParam(value = "maxRating", required = false) Double maxRating,
+                              @RequestParam(value = "order", required = false, defaultValue = "ID") ShipOrder order,
+                              @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
+                              @RequestParam(value = "pageSize", required = false, defaultValue = "3") Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(order.getFieldName()));
+
+        return shipService.listAll(
+                Specification.where(shipService.sortByName(name)
+                        .and(shipService.sortByPlanet(planet)))
+                        .and(shipService.sortByShipType(shipType))
+                        .and(shipService.sortByProdDate(after, before))
+                        .and(shipService.sortByUsed(isUsed))
+                        .and(shipService.sortBySpeed(minSpeed, maxSpeed))
+                        .and(shipService.sortByCrewSize(minCrewSize, maxCrewSize))
+                        .and(shipService.sortByRating(minRating, maxRating)), pageable)
+                .getContent();
+
     }
 
     @GetMapping(path = "/ships/count", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Long count() {
-        System.out.println(shipService.сount());
-        return shipService.сount();
+    public Long count(@RequestParam(value = "name", required = false) String name,
+                      @RequestParam(value = "planet", required = false) String planet,
+                      @RequestParam(value = "shipType", required = false) ShipType shipType,
+                      @RequestParam(value = "after", required = false) Long after,
+                      @RequestParam(value = "before", required = false) Long before,
+                      @RequestParam(value = "isUsed", required = false) Boolean isUsed,
+                      @RequestParam(value = "minSpeed", required = false) Double minSpeed,
+                      @RequestParam(value = "maxSpeed", required = false) Double maxSpeed,
+                      @RequestParam(value = "minCrewSize", required = false) Integer minCrewSize,
+                      @RequestParam(value = "maxCrewSize", required = false) Integer maxCrewSize,
+                      @RequestParam(value = "minRating", required = false) Double minRating,
+                      @RequestParam(value = "maxRating", required = false) Double maxRating) {
+
+        return shipService.сount(
+                Specification.where(shipService.sortByName(name)
+                        .and(shipService.sortByPlanet(planet)))
+                        .and(shipService.sortByShipType(shipType))
+                        .and(shipService.sortByProdDate(after, before))
+                        .and(shipService.sortByUsed(isUsed))
+                        .and(shipService.sortBySpeed(minSpeed, maxSpeed))
+                        .and(shipService.sortByCrewSize(minCrewSize, maxCrewSize))
+                        .and(shipService.sortByRating(minRating, maxRating)));
     }
 
     @GetMapping(path = "ships/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

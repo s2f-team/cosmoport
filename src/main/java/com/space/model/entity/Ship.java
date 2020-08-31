@@ -7,6 +7,7 @@ import org.apache.commons.math3.util.Precision;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -173,6 +174,9 @@ public class Ship {
 
     public static void main(String[] args) {
         Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println(sdf.format(date));
+        System.out.println(date);
         System.out.println(date.getTime());
 
         Calendar calendar = new GregorianCalendar(2800, 1, 1);

@@ -16,6 +16,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.data.domain.Pageable;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -84,19 +85,24 @@ public class ShipService {
     }
 
     public Specification<Ship> sortByProdDate(Long before, Long after) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return new Specification<Ship>() {
             @Override
             public Predicate toPredicate(Root<Ship> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 if (before == null && after == null) {
                     return null;
                 }
+                //ошибка была здесь, но я не поняла почему так. Я поменяла местами эти 2 метода и прошла проверку.
+
                 if (after == null) {
                     Date beforeDate = new Date(before);
-                    return criteriaBuilder.lessThanOrEqualTo(root.get("prodDate"), beforeDate);
+                    //здесь был метод lessThanOrEqualTo
+                    return criteriaBuilder.greaterThanOrEqualTo(root.get("prodDate"), beforeDate);
                 }
                 if (before == null) {
                     Date afterDate = new Date(after);
-                    return criteriaBuilder.greaterThanOrEqualTo(root.get("prodDate"), afterDate);
+                    //здесь был метод greaterThanOrEqualTo
+                    return criteriaBuilder.lessThanOrEqualTo(root.get("prodDate"), afterDate);
                 }
                 Date beforeDate = new Date(before);
                 Date afterDate = new Date(after);

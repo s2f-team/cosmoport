@@ -61,7 +61,7 @@ public class ShipController {
 
     @GetMapping(path = "/ships/count", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Long count(@RequestParam(value = "name", required = false) String name,
+    public Integer count(@RequestParam(value = "name", required = false) String name,
                       @RequestParam(value = "planet", required = false) String planet,
                       @RequestParam(value = "shipType", required = false) ShipType shipType,
                       @RequestParam(value = "after", required = false) Long after,

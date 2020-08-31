@@ -31,8 +31,8 @@ public class ShipService {
         return shipRepository.findAll(specification, sortByName);
     }
 
-    public long сount(Specification<Ship> specification) {
-        return shipRepository.count(specification);
+    public Integer сount(Specification<Ship> specification) {
+        return Math.toIntExact(shipRepository.count(specification));
     }
 
     public Optional<Ship> findById(Long id) {

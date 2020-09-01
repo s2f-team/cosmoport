@@ -177,6 +177,7 @@ public class ShipController {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ship not found.");
             }
         } catch (NullPointerException e) {
+            log.debug("Id is null.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
@@ -185,7 +186,8 @@ public class ShipController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteById(@PathVariable("id") Long id) {
         if (id == 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            log.debug("Id = 0. Incorrect Id.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id = 0.");
         }
         try {
             log.debug("DELETE request to ship {}", id);
@@ -197,6 +199,7 @@ public class ShipController {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ship not found.", e);
             }
         } catch (NullPointerException e) {
+            log.debug("Id is null.");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }

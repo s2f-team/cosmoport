@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,8 @@ import java.util.Optional;
 @RequestMapping("/rest")
 public class ShipController {
     private static final Logger log = LoggerFactory.getLogger(ShipController.class);
+    Date dateFrom = new Date(280026194914000000L);
+    Date dateTo = new Date(301933126786000000L);
 
     @Autowired
     ShipService shipService;
@@ -62,17 +65,17 @@ public class ShipController {
     @GetMapping(path = "/ships/count", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Integer count(@RequestParam(value = "name", required = false) String name,
-                      @RequestParam(value = "planet", required = false) String planet,
-                      @RequestParam(value = "shipType", required = false) ShipType shipType,
-                      @RequestParam(value = "after", required = false) Long after,
-                      @RequestParam(value = "before", required = false) Long before,
-                      @RequestParam(value = "isUsed", required = false) Boolean isUsed,
-                      @RequestParam(value = "minSpeed", required = false) Double minSpeed,
-                      @RequestParam(value = "maxSpeed", required = false) Double maxSpeed,
-                      @RequestParam(value = "minCrewSize", required = false) Integer minCrewSize,
-                      @RequestParam(value = "maxCrewSize", required = false) Integer maxCrewSize,
-                      @RequestParam(value = "minRating", required = false) Double minRating,
-                      @RequestParam(value = "maxRating", required = false) Double maxRating) {
+                         @RequestParam(value = "planet", required = false) String planet,
+                         @RequestParam(value = "shipType", required = false) ShipType shipType,
+                         @RequestParam(value = "after", required = false) Long after,
+                         @RequestParam(value = "before", required = false) Long before,
+                         @RequestParam(value = "isUsed", required = false) Boolean isUsed,
+                         @RequestParam(value = "minSpeed", required = false) Double minSpeed,
+                         @RequestParam(value = "maxSpeed", required = false) Double maxSpeed,
+                         @RequestParam(value = "minCrewSize", required = false) Integer minCrewSize,
+                         @RequestParam(value = "maxCrewSize", required = false) Integer maxCrewSize,
+                         @RequestParam(value = "minRating", required = false) Double minRating,
+                         @RequestParam(value = "maxRating", required = false) Double maxRating) {
 
         return shipService.сount(
                 Specification.where(shipService.sortByName(name)
@@ -88,7 +91,9 @@ public class ShipController {
     @GetMapping(path = "ships/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Ship findById(@PathVariable("id") Long id) {
-        if (id == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if (id == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         try {
             Optional<Ship> shipResponse = shipService.findById(id);
             return shipResponse.get();
@@ -101,13 +106,18 @@ public class ShipController {
     @ResponseStatus(HttpStatus.OK)
     public Ship createShip(@RequestBody Ship ship) {
         try {
-            if (ship.getName().length() > 50 || ship.getPlanet().length() > 50 || ship.getSpeed() == null || ship.getName().isEmpty())
+            if (ship.getName().length() > 50 || ship.getPlanet().length() > 50 || ship.getSpeed() == null || ship.getName().isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            if (ship.getCrewSize() > 9999) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-            if (ship.getProdDate().getTime() < 26194914000000L || ship.getProdDate().getTime() > 33126786000000L)
+            }
+            if (ship.getCrewSize() > 9999) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
-            if (ship.getUsed() == null) ship.setUsed(false);
+            }
+            if (ship.getProdDate().getTime() < 26194914000000L || ship.getProdDate().getTime() > 33126786000000L) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+            if (ship.getUsed() == null) {
+                ship.setUsed(false);
+            }
             ship.setSpeed(Ship.roundDoubleTo100(ship.getSpeed()));
             ship.setRating(ship.countRating());
             return shipService.save(ship);

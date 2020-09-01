@@ -41,7 +41,7 @@ public class Ship {
     private Date prodDate; //ms (started 01.01.1970)
 
     @Column(name = "isUsed")
-    private Boolean isUsed; //default false (if doesn't exists)
+    private Boolean isUsed;
 
     @Column(name = "speed")
     @NotNull
@@ -182,8 +182,8 @@ public class Ship {
         Calendar calendar = new GregorianCalendar(2800, 1, 1);
         Calendar calendar2 = new GregorianCalendar(3019, 9, 1);
 
-        System.out.println("2800" + calendar.getTimeInMillis());
-        System.out.println("3019" + calendar2.getTimeInMillis());
+        System.out.println("2800 " + calendar.getTimeInMillis());
+        System.out.println("3019 " + calendar2.getTimeInMillis());
 
         Double r = 27.512399999999998;
         Double r2 = 2752.153789;
@@ -193,8 +193,8 @@ public class Ship {
         System.out.println(roundDoubleTo100(r));
         System.out.println(roundDoubleTo100(r2));
 
-        Date date1 = new Date(280026194914000000L);
-        Date date2 = new Date(301933126786000000L);
+        Date date1 = new Date(26194914000000L);
+        Date date2 = new Date(33126786000000L);
 
         System.out.println(date1.getTime());
         System.out.println(date2.getTime());

@@ -23,8 +23,8 @@ import java.util.Optional;
 @RequestMapping("/rest")
 public class ShipController {
     private static final Logger log = LoggerFactory.getLogger(ShipController.class);
-    Date dateFrom = new Date(280026194914000000L);
-    Date dateTo = new Date(301933126786000000L);
+    Date dateFrom2800Year = new Date(26194914000000L);
+    Date dateTo3019Year = new Date(33126786000000L);
 
     @Autowired
     ShipService shipService;
@@ -112,7 +112,7 @@ public class ShipController {
             if (ship.getCrewSize() > 9999) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
-            if (ship.getProdDate().getTime() < 26194914000000L || ship.getProdDate().getTime() > 33126786000000L) {
+            if (ship.getProdDate().getTime() < dateFrom2800Year.getTime() || ship.getProdDate().getTime() > dateTo3019Year.getTime()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
             if (ship.getUsed() == null) {
@@ -132,15 +132,18 @@ public class ShipController {
     public Ship updateShip(@RequestBody(required = false) Ship ship, @PathVariable("id") Long id) {
 
         try {
-            if (id == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
+            if (id == 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
             if (shipService.isExistById(id)) {
                 log.debug("UPDATE request to ship {}", id);
 
                 Ship updatedShip = shipService.findById(id).get();
 
                 if (ship.getName() != null && ship.getName().length() <= 50) {
-                    if (ship.getName().isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                    if (ship.getName().isEmpty()) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                    }
                     updatedShip.setName(ship.getName());
                 }
                 if (ship.getPlanet() != null && ship.getPlanet().length() <= 50) {
@@ -150,8 +153,9 @@ public class ShipController {
                     updatedShip.setShipType(ship.getShipType());
                 }
                 if (ship.getProdDate() != null) {
-                    if (ship.getProdDate().getTime() < 26194914000000L || ship.getProdDate().getTime() > 33126786000000L)
+                    if (ship.getProdDate().getTime() < dateFrom2800Year.getTime() || ship.getProdDate().getTime() > dateTo3019Year.getTime()) {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                    }
                     updatedShip.setProdDate(ship.getProdDate());
                 }
                 if (ship.getUsed() != null) {
@@ -161,15 +165,13 @@ public class ShipController {
                     updatedShip.setSpeed(Ship.roundDoubleTo100(ship.getSpeed()));
                 }
                 if (ship.getCrewSize() != null) {
-                    if (ship.getCrewSize() < 1 || ship.getCrewSize() > 9999)
+                    if (ship.getCrewSize() < 1 || ship.getCrewSize() > 9999) {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                    }
                     updatedShip.setCrewSize(ship.getCrewSize());
                 }
-
                 updatedShip.setRating(updatedShip.countRating());
-
                 return shipService.save(updatedShip);
-
             } else {
                 log.error("Ship {} not found.", id);
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ship not found.");
@@ -177,13 +179,14 @@ public class ShipController {
         } catch (NullPointerException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @DeleteMapping(path = "ships/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteById(@PathVariable("id") Long id) {
-        if (id == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        if (id == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         try {
             log.debug("DELETE request to ship {}", id);
             try {

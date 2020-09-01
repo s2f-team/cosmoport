@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -52,13 +51,13 @@ public class ShipService {
         return shipRepository.existsById(id);
     }
 
-    // Filters
-
     public Specification<Ship> sortByName(String name) {
         return new Specification<Ship>() {
             @Override
             public Predicate toPredicate(Root<Ship> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                if (name == null) return null;
+                if (name == null) {
+                    return null;
+                }
                 return criteriaBuilder.like(root.get("name"), "%" + name + "%");
             }
         };
@@ -68,7 +67,9 @@ public class ShipService {
         return new Specification<Ship>() {
             @Override
             public Predicate toPredicate(Root<Ship> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                if (planet == null) return null;
+                if (planet == null) {
+                    return null;
+                }
                 return criteriaBuilder.like(root.get("planet"), "%" + planet + "%");
             }
         };
@@ -78,14 +79,15 @@ public class ShipService {
         return new Specification<Ship>() {
             @Override
             public Predicate toPredicate(Root<Ship> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                if (shipType == null) return null;
+                if (shipType == null) {
+                    return null;
+                }
                 return criteriaBuilder.equal(root.get("shipType"), shipType);
             }
         };
     }
 
     public Specification<Ship> sortByProdDate(Long before, Long after) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return new Specification<Ship>() {
             @Override
             public Predicate toPredicate(Root<Ship> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -93,7 +95,6 @@ public class ShipService {
                     return null;
                 }
                 //ошибка была здесь, но я не поняла почему так. Я поменяла местами эти 2 метода и прошла проверку.
-
                 if (after == null) {
                     Date beforeDate = new Date(before);
                     //здесь был метод lessThanOrEqualTo
@@ -115,9 +116,12 @@ public class ShipService {
         return new Specification<Ship>() {
             @Override
             public Predicate toPredicate(Root<Ship> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                if (isUsed == null) return null;
-                if (isUsed) return criteriaBuilder.isTrue(root.get("isUsed"));
-                else return criteriaBuilder.isFalse(root.get("isUsed"));
+                if (isUsed == null) {
+                    return null;
+                }
+                if (isUsed) {
+                    return criteriaBuilder.isTrue(root.get("isUsed"));
+                } else return criteriaBuilder.isFalse(root.get("isUsed"));
             }
         };
     }
@@ -126,9 +130,15 @@ public class ShipService {
         return new Specification<Ship>() {
             @Override
             public Predicate toPredicate(Root<Ship> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                if (minSpeed == null && maxSpeed == null) return null;
-                if (minSpeed == null) return criteriaBuilder.lessThanOrEqualTo(root.get("speed"), maxSpeed);
-                if (maxSpeed == null) return criteriaBuilder.greaterThanOrEqualTo(root.get("speed"), minSpeed);
+                if (minSpeed == null && maxSpeed == null) {
+                    return null;
+                }
+                if (minSpeed == null) {
+                    return criteriaBuilder.lessThanOrEqualTo(root.get("speed"), maxSpeed);
+                }
+                if (maxSpeed == null) {
+                    return criteriaBuilder.greaterThanOrEqualTo(root.get("speed"), minSpeed);
+                }
                 return criteriaBuilder.between(root.get("speed"), minSpeed, maxSpeed);
             }
         };
@@ -138,9 +148,15 @@ public class ShipService {
         return new Specification<Ship>() {
             @Override
             public Predicate toPredicate(Root<Ship> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                if (minSize == null && maxSize == null) return null;
-                if (minSize == null) return criteriaBuilder.lessThanOrEqualTo(root.get("crewSize"), maxSize);
-                if (maxSize == null) return criteriaBuilder.greaterThanOrEqualTo(root.get("crewSize"), minSize);
+                if (minSize == null && maxSize == null) {
+                    return null;
+                }
+                if (minSize == null) {
+                    return criteriaBuilder.lessThanOrEqualTo(root.get("crewSize"), maxSize);
+                }
+                if (maxSize == null) {
+                    return criteriaBuilder.greaterThanOrEqualTo(root.get("crewSize"), minSize);
+                }
                 return criteriaBuilder.between(root.get("crewSize"), minSize, maxSize);
             }
         };
@@ -150,13 +166,17 @@ public class ShipService {
         return new Specification<Ship>() {
             @Override
             public Predicate toPredicate(Root<Ship> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                if (minRating == null && maxRating == null) return null;
-                if (minRating == null) return criteriaBuilder.lessThanOrEqualTo(root.get("rating"), maxRating);
-                if (maxRating == null) return criteriaBuilder.greaterThanOrEqualTo(root.get("rating"), minRating);
+                if (minRating == null && maxRating == null) {
+                    return null;
+                }
+                if (minRating == null) {
+                    return criteriaBuilder.lessThanOrEqualTo(root.get("rating"), maxRating);
+                }
+                if (maxRating == null) {
+                    return criteriaBuilder.greaterThanOrEqualTo(root.get("rating"), minRating);
+                }
                 return criteriaBuilder.between(root.get("rating"), minRating, maxRating);
             }
         };
     }
-
-
 }
